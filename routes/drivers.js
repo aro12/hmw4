@@ -50,22 +50,22 @@ router.route('/drivers')
                     if(isRequestValid(queryParam,req,res)!=1){
                         return;
                     }
-
                     Driver.find(queryParam).exec(function(err,driverM){
-                        if(driverM == undefined){
-                             res.status(400).json({
+                        if(driverM == undefined || driverM == null){
+                             res.status(404).json({
                                 "errorCode": "2002", 
                                 "errorMessage": util.format("Invalid %s format for the given driver",Object.keys(queryParam)), 
-                                "statusCode" : "400"
+                                "statusCode" : "404"
                             })
                             return;
                         }
-                        if(driverM.length < 1)
+                        else if(driverM.length < 1){
                            res.status(404).json({
                              "errorCode": "2001", 
                              "errorMessage": util.format("Driver with attribute %s does not exist",JSON.stringify(queryParam)), 
                              "statusCode" : "404"
                             })
+                        }   
                         else{
                            var fixDrivers = [];
                             for(var index in driverM){
@@ -143,10 +143,10 @@ router.route('/drivers')
                     var errorKey = Object.keys(err.errors)[0];
                     var errorObj = err.errors[errorKey];
                     if(errorObj.kind == 'required'){
-                        res.status(422).json({
+                        res.status(400).json({
                             "errorCode": "2004", 
                             "errorMessage": util.format("Property '%s' is required for the given driver", errorKey), 
-                            "statusCode" : "422"
+                            "statusCode" : "400"
                         });
                         return;
                     }
@@ -222,6 +222,14 @@ router.route('/drivers/:driver_id')
                         "statusCode" : "404"
                     })
             }else{
+                if(driver == null){
+                    res.status(404).json({
+                        "errorCode": "1002", 
+                        "errorMessage": util.format("Given driver with id '%s' does not exist",req.params.driver_id), 
+                        "statusCode" : "404"
+                    });
+                    return;
+                }
                 var tempDriver = driver;
                 tempDriver['password'] = null;
                 res.json(tempDriver);

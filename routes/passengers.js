@@ -52,7 +52,7 @@ router.route('/passengers')
                     }
 
                     Passenger.find(queryParam).exec(function(err,passengerM){
-                        if(passengerM == undefined){
+                        if(passengerM == undefined || passengerM == null){
                              res.status(400).json({
                                 "errorCode": "4002", 
                                 "errorMessage": util.format("Invalid %s format for the given passenger",Object.keys(queryParam)), 
@@ -106,10 +106,6 @@ router.route('/passengers')
      * @throws Mongoose Database Error (500 Status Code)
      */
     .post(function(req, res){
-        if(typeof req.body.firstName === 'undefined'){
-            res.status(422).json({"errorCode": "1002", "errorMessage" : util.format("Missing required parameter %s", "firstName"), "statusCode" : "422"});
-            return;
-        }
         /**
          * Add aditional error handling here
          */
@@ -128,7 +124,7 @@ router.route('/passengers')
         passenger.zip = req.body.zip;
         passenger.phoneNumber = req.body.phoneNumber;
 
-        passenger.save(function(err){
+        passenger.save(function(err,passengerK){
             if(err){
                 if(Object.keys(err).indexOf('errmsg')>0){
                     res.status(400).json({
@@ -142,10 +138,10 @@ router.route('/passengers')
                     var errorKey = Object.keys(err.errors)[0];
                     var errorObj = err.errors[errorKey];
                     if(errorObj.kind == 'required'){
-                        res.status(422).json({
+                        res.status(400).json({
                             "errorCode": "2004", 
                             "errorMessage": util.format("Property '%s' is required for the given passenger", errorKey), 
-                            "statusCode" : "422"
+                            "statusCode" : "400"
                         })
                     }
                     else if(errorObj.name == 'CastError'){
@@ -155,14 +151,37 @@ router.route('/passengers')
                             "statusCode" : "400"
                         })
                     }
+                    else{
+                        res.status(400).json({
+                            "errorCode": "2002", 
+                            "errorMessage": util.format("Invalid driver object"),
+                            "description": errorObj.message, 
+                            "statusCode" : "400"
+                        })
+                        return;
+                   }
                 }
                 else
                     res.status(500).send(err);
             }else{
-                res.status(201).json({"message" : "Passenger Created", "passengerCreated" : passenger});
+                res.status(201).json(passengerK);
             }
         });
-    });
+    }).
+    delete(function(req,res){
+        Passenger.remove({},function(err){
+            if(err){
+                //res.status(500).send(err);
+                res.status(404).json({
+                        "errorCode": "1002", 
+                        "errorMessage": "Error deleting passengers",
+                        "statusCode" : "404"
+                    })
+            }else{
+                res.json({"message" : "All Passengers Deleted"});
+            }
+        })
+    })
 
 /** 
  * Express Route: /passengers/:passenger_id
@@ -187,6 +206,14 @@ router.route('/passengers/:passenger_id')
                         "statusCode" : "404"
                     })
             }else{
+                 if(passenger == null){
+                    res.status(404).json({
+                        "errorCode": "1002", 
+                        "errorMessage": util.format("Given passenger with id '%s' does not exist",req.params.passenger_id), 
+                        "statusCode" : "404"
+                    });
+                    return;
+                }
                 var tempPassenger = passenger;
                 tempPassenger['password'] = null;
                 res.json(tempPassenger);
@@ -230,10 +257,10 @@ router.route('/passengers/:passenger_id')
                                 var errorKey = Object.keys(err.errors)[0];
                                 var errorObj = err.errors[errorKey];
                                 if(errorObj.kind == 'required'){
-                                    res.status(422).json({
+                                    res.status(400).json({
                                         "errorCode": "2004", 
                                         "errorMessage": util.format("Property '%s' is required for the given passenger", errorKey), 
-                                        "statusCode" : "422"
+                                        "statusCode" : "400"
                                     })
                                 }
                                 else if(errorObj.name == 'CastError'){
