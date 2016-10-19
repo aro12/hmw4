@@ -33,9 +33,30 @@ function requireAuthentication(req,res,next){
                     })
                     return false;
                }
-               else if(('expiration' in authObj)){
+               else if(('token' in authObj)){
+                   
+                   var username = "aroshi";
+                   var password = "honda";
+                   
+                   //Split the token into username, expiration, hash
+                   var decodeString = base64.decode(authObj.token);
+                   var decryptString = CryptoJS.AES.decrypt(decodeString,password);
+                   var hashString =  decryptString.toString(CryptoJS.enc.Utf8);
+                   var splitString = hashString.split(":");
+
+                   if(splitString.length!=3){
+                        res.status(401).json({
+                                "errorCode": "5008", 
+                                "errorMessage": util.format("Invalid Token, Token has been tampered"), 
+                                "statusCode" : "401"
+                        })
+                        return false;
+                   }
+
+                   // console.log(splitString);
+
                    // Check if token has expired or not
-                   var exp = authObj.expiration
+                   var exp = splitString[1].expiration
                    var now =  parseInt(new Date()/1000);
                    // console.log(exp,now,exp-now);
                    if(exp-now<0){
@@ -48,38 +69,22 @@ function requireAuthentication(req,res,next){
                         return false;
                    }
 
-                   // check if token is valid and wasnt tampered
-                   // Rehash the expiration & username
+                   // check if hash matchces
+                   var checkHash = splitString[2];
+                   var oldHash = CryptoJS.HmacSHA1(splitString[0]+":"+splitString[1],"APP");
 
-                   /////////// -- TESTING TOKEN FOR VALIDITY ///////////////
-                   var username = "aroshi";
-                   var password = "honda";
-            
-                   clearString = authObj.username+":"+exp;
-                   hashString = CryptoJS.HmacSHA1(clearString,"APP");
-                   cryptString = CryptoJS.AES.encrypt(clearString+":"+hashString,password).toString();
-                   console.log(clearString, hashString,":",cryptString);
-                   var token = base64.encode(cryptString);   
-                   // check if this token equal to stored token
-                   // if(token == authObj.token)
-
-                   /// Trying to decrypt too
-                   var decodeString = base64.decode(authObj.token);
-                   var decryptString = CryptoJS.AES.decrypt(decodeString,password);
-                   //var printTo = cryptString + ":" + decryptString;
-
-                   //console.log(token,authObj.token);
-                   if(token == authObj.token)
-                        return next();
-                    else
-                    {
-                         res.status(401).json({
+                   console.log(checkHash, oldHash);
+                   if(checkHash == oldHash){
+                       return next()
+                   }
+                   else{
+                        res.status(401).json({
                                 "errorCode": "5008", 
                                 "errorMessage": util.format("Invalid Token, Token has been tampered"), 
                                 "statusCode" : "401"
                         })
                         return false;
-                    }
+                   }
                }
                 //console.log();
                 res.redirect("/");

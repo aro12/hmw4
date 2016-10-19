@@ -57,8 +57,6 @@ router.route('/')
         // console.log("token", response)
         
         var mSession = new Session();
-        mSession.expiration = expiration;
-        mSession.username = username;
         mSession.token = response.token;
 
         mSession.save(function(err,lSession){
