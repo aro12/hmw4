@@ -66,7 +66,7 @@ function requireAuthentication(req,res,next){
                    /// Trying to decrypt too
                    var decodeString = base64.decode(authObj.token);
                    var decryptString = CryptoJS.AES.decrypt(decodeString,password);
-                   var token = cryptString + ":" + decryptString;
+                   //var printTo = cryptString + ":" + decryptString;
 
                    //console.log(token,authObj.token);
                    if(token == authObj.token)
