@@ -1,0 +1,32 @@
+Service running on port 8080
+
+  ✓ cars_delete_all_car (731ms)
+  ✓ cars01_should_create_car (242ms)
+  ✓ cars02_should_get_car (162ms)
+  ✓ cars03_should_delete_car (140ms)
+57f6eff047cc141ca0c67af3
+  ✓ cars04_should_not_get_deleted_car (141ms)
+  ✓ cars05_should_not_get_random_id_car (72ms)
+  ✓ cars06_should_not_create_car_missing_make
+  ✓ cars07_should_not_create_car_with_long_make
+  ✓ drivers_delete_all_car (79ms)
+57f6eff047cc141ca0c67af9
+  ✓ drivers01_should_create_driver (84ms)
+  ✓ drivers02_should_get_driver (82ms)
+  ✓ drivers03_should_delete_driver (80ms)
+57f6eff047cc141ca0c67af9
+  ✓ drivers04_should_not_get_deleted_driver (81ms)
+  ✓ drivers05_should_not_get_random_id_driver
+  ✓ drivers06_should_not_create_driver_missing_email_address
+  ✓ drivers07_should_not_create_driver_with_long_first_name
+  ✓ passengers01_delete_all_passenger (81ms)
+  ✓ passengers01_should_create_passenger (93ms)
+  ✓ passengers02_should_get_passenger (82ms)
+  ✓ passengers03_should_delete_passenger (80ms)
+  ✓ passengers04_should_not_get_deleted_passenger (79ms)
+  ✓ passengers05_should_not_get_random_id_passenger
+  ✓ passengers06_should_not_create_passenger_missing_email_address
+  ✓ passengers07_should_not_create_passenger_with_long_first_name
+
+  24 passing (2s)
+
