@@ -57,10 +57,13 @@ function requireAuthentication(req,res,next){
             
                    clearString = authObj.username+":"+exp;
                    hashString = CryptoJS.HmacSHA1(clearString,"APP");
-                   cryptString = CryptoJS.AES.decrypt(clearString+":"+hashString,password).toString();
-                    // console.log(clearString, hashString,":",cryptString);
-                    // var token = base64.encode(cryptString);   
+                   cryptString = CryptoJS.AES.encrypt(clearString+":"+hashString,password).toString();
+                   console.log(clearString, hashString,":",cryptString);
+                   var token = base64.encode(cryptString);   
+                   // check if this token equal to stored token
+                   // if(token == authObj.token)
 
+                   /// Trying to decrypt too
                    var decodeString = base64.decode(authObj.token);
                    var decryptString = CryptoJS.AES.decrypt(decodeString,password);
                    var token = cryptString + ":" + decryptString;
