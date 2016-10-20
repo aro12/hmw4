@@ -59,7 +59,6 @@ function requireAuthentication(req,res,next){
                    var expired = splitString[1].expiration
                    var now =  parseInt(new Date()/1000);
                    if(expired-now<0){
-                       console.log("Token Expired");
                        res.status(400).json({
                             "errorCode": "5007", 
                             "errorMessage": util.format("Token Expired"), 
@@ -71,8 +70,6 @@ function requireAuthentication(req,res,next){
                    // check if hash matchces
                    var checkHash = splitString[2];
                    var oldHash = CryptoJS.HmacSHA1(splitString[0]+":"+splitString[1],"APP");
-
-                   console.log(checkHash, oldHash);
                    if(checkHash == oldHash){
                        return next()
                    }
