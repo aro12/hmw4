@@ -1,7 +1,7 @@
 /** 
  * Express Route: /passengers
- * @author Clark Jeria
- * @version 0.0.3
+ * @author Aroshi Handa
+ * @version 0.2
  */
 var express = require('express');
 var router = express.Router();
@@ -9,6 +9,7 @@ var util = require('util');
 
 var Passenger = require('../app/models/passenger');
 
+// Checks if the passenger properties are valid or not
 function isRequestValid(mKeys,req,res){
     var schemaKeys = [];
     Passenger.schema.eachPath(function(path){
@@ -38,7 +39,9 @@ router.route('/passengers')
      */
     .get(function(req, res){
         /**
-         * Add extra error handling rules here
+         *  Error handling rules below-
+         * Checks the validity of the format for a given passenger
+         * Checks if the passenger with the sepecifed attribute exists or not
          */
     Passenger.find(function(err, passengers){
         var queryParam = req.query;
@@ -107,7 +110,10 @@ router.route('/passengers')
      */
     .post(function(req, res){
         /**
-         * Add aditional error handling here
+         * Error handling here-
+         * Checks if the passenger already exists or not
+         * Checks if another attribute or property is needed for the passenger
+         * Checks the validity of the given passenger object
          */
 
         var passenger = new Passenger();
@@ -168,10 +174,11 @@ router.route('/passengers')
             }
         });
     }).
+
+    //Delete passengers if no error
     delete(function(req,res){
         Passenger.remove({},function(err){
             if(err){
-                //res.status(500).send(err);
                 res.status(404).json({
                         "errorCode": "1002", 
                         "errorMessage": "Error deleting passengers",
@@ -195,11 +202,11 @@ router.route('/passengers/:passenger_id')
      */
     .get(function(req, res){
         /**
-         * Add extra error handling rules here
+         * Error handling rules here-
+         * To check if the given passenger with the id exists
          */
         Passenger.findById(req.params.passenger_id, function(err, passenger){
             if(err){
-                //res.status(500).send(err);
                     res.status(404).json({
                         "errorCode": "1002", 
                         "errorMessage": util.format("Given driver with id '%s' does not exist",req.params.passenger_id), 
@@ -238,7 +245,9 @@ router.route('/passengers/:passenger_id')
      */
     .patch(function(req, res){
         /**
-         * Add aditional error handling here
+         * Error handling here-
+         * Checks if another/specific property is needed for the passenger
+         * Checks if there is an invalid property/request of the given passenger
          */
         Passenger.findById(req.params.passenger_id, function(err, passenger){
             if(err){
@@ -252,7 +261,6 @@ router.route('/passengers/:passenger_id')
 
                 passenger.save(function(err){
                     if(err){
-                        //console.log(err);
                             if(Object.keys(err).indexOf('errors')>0){
                                 var errorKey = Object.keys(err.errors)[0];
                                 var errorObj = err.errors[errorKey];
@@ -287,13 +295,13 @@ router.route('/passengers/:passenger_id')
      */
     .delete(function(req, res){
         /**
-         * Add extra error handling rules here
+         * Error handling rules here-
+         * Deletes the specific passenger if id is valid
          */
         Passenger.remove({
             _id : req.params.passenger_id
         }, function(err, passenger){
             if(err){
-               // res.status(500).send(err);
                res.status(404).json({
                         "errorCode": "1002", 
                         "errorMessage": util.format("Given passenger with id '%s' does not exist",req.params.passenger_id), 

@@ -1,7 +1,7 @@
 /** 
  * Express Route: /paymentaccounts
- * @author Clark Jeria
- * @version 0.0.3
+ * @author Aroshi Handa
+ * @version 0.3
  */
 var express = require('express');
 var router = express.Router();
@@ -9,6 +9,7 @@ var util = require('util');
 
 var PaymentAccount = require('../app/models/paymentaccount');
 
+// Checks the validity of the payment account
 function isRequestValid(mKeys,req,res){
     var schemaKeys = [];
     PaymentAccount.schema.eachPath(function(path){
@@ -38,7 +39,9 @@ router.route('/paymentaccounts')
      */
     .get(function(req, res){
         /**
-         * Add extra error handling rules here
+         * Error handling rules here-
+         * Checks the validity of the format for a given payment account
+         * Checks if the payment account with the sepecifed attribute exists or not
          */
         PaymentAccount.find(function(err, PaymentAccounts){
         var queryParam = req.query;
@@ -105,7 +108,10 @@ router.route('/paymentaccounts')
             return;
         }
         /**
-         * Add aditional error handling here
+         * Error handling rules here-
+         * Checks if the payment account already exists or not
+         * Checks if another attribute or property is needed for the payment account
+         * Checks the validity of the given payment account object
          */
 
         var paymentAccount = new PaymentAccount();
@@ -163,11 +169,12 @@ router.route('/paymentaccounts/:paymentaccount_id')
      */
     .get(function(req, res){        
         /**
-         * Add extra error handling rules here
+         * Error handling rules here-
+         * Checks the validity of the format for a specific payment account
+         * Checks if the payment account with the sepecifed attribute exists or not
          */
         PaymentAccount.findById(req.params.paymentaccount_id, function(err, paymentAccount){
             if(err){
-                //res.status(500).send(err);
                  res.status(404).json({
                         "errorCode": "4001", 
                         "errorMessage": util.format("Given passenger with id '%s' does not exist",req.params.paymentaccount_id), 
@@ -195,7 +202,8 @@ router.route('/paymentaccounts/:paymentaccount_id')
             return;
         }
         /**
-         * Add aditional error handling here
+         * Error handling here-
+         * Checks if a property is required for a payment account to update account
          */
 
         PaymentAccount.findById(req.params.paymentaccount_id, function(err, paccount){
@@ -210,7 +218,6 @@ router.route('/paymentaccounts/:paymentaccount_id')
 
                 paymentaccount.save(function(err){
                     if(err){
-                        //console.log(err);
                             if(Object.keys(err).indexOf('errors')>0){
                                 var errorKey = Object.keys(err.errors)[0];
                                 var errorObj = err.errors[errorKey];
@@ -245,13 +252,13 @@ router.route('/paymentaccounts/:paymentaccount_id')
      */
     .delete(function(req, res){  
         /**
-         * Add extra error handling rules here
+         * Error handling rules here-
+         * Delete the specific payment account if no error
          */
         PaymentAccount.remove({
             _id : req.params.paymentaccount_id
         }, function(err, paymentaccount){
             if(err){
-                //res.status(500).send(err);
                 res.status(404).json({
                         "errorCode": "1002", 
                         "errorMessage": util.format("Given payment account with id '%s' does not exist",req.params.paymentaccount_id), 

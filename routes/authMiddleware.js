@@ -7,8 +7,10 @@ var APP_SECRET = "SecretKey";
 var CryptoJS=require("crypto-js");
 var base64=require("js-base64").Base64;
 
+//Check authentication using token
+//Check if token is valid or invalid
+
 function requireAuthentication(req,res,next){
-     //console.log(req.header("token"));
      if (req.header("token")!="" && req.header("token")!=undefined){
           var tokenObject = {
                 token:req.header("token")
@@ -36,7 +38,7 @@ function requireAuthentication(req,res,next){
                else if(('token' in authObj)){
                    
                    var username = "aroshi";
-                   var password = "honda";
+                   var password = "handa";
                    
                    //Split the token into username, expiration, hash
                    var decodeString = base64.decode(authObj.token);
@@ -53,13 +55,10 @@ function requireAuthentication(req,res,next){
                         return false;
                    }
 
-                   // console.log(splitString);
-
                    // Check if token has expired or not
-                   var exp = splitString[1].expiration
+                   var expired = splitString[1].expiration
                    var now =  parseInt(new Date()/1000);
-                   // console.log(exp,now,exp-now);
-                   if(exp-now<0){
+                   if(expired-now<0){
                        console.log("Token Expired");
                        res.status(400).json({
                             "errorCode": "5007", 
@@ -86,7 +85,6 @@ function requireAuthentication(req,res,next){
                         return false;
                    }
                }
-                //console.log();
                 res.redirect("/");
                 return false;
              })

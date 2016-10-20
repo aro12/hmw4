@@ -1,7 +1,7 @@
 /** 
  * Example of RESTful API using Express and NodeJS
- * @author Clark Jeria
- * @version 0.0.2
+ * @author Aroshi Handa
+ * @version 0.11
  */
 
 /** BEGIN: Express Server Configuration */

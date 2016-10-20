@@ -1,7 +1,7 @@
 /** 
  * Express Route: /rides
- * @author Clark Jeria
- * @version 0.0.3
+ * @author Aroshi Handa
+ * @version 0.4
  */
 var express = require('express');
 var router = express.Router();
@@ -13,7 +13,7 @@ var Driver = require('../app/models/driver');
 var Passenger = require('../app/models/passenger');
 var mongoose = require('mongoose');
 
-
+// Checks if the ride properties are valid or not
 function isRequestValid(mKeys,req,res){
     var schemaKeys = [];
     Ride.schema.eachPath(function(path){
@@ -43,7 +43,9 @@ router.route('/rides')
      */
     .get(function(req, res){
         /**
-         * Add extra error handling rules here
+         * Error handling rules here-
+         * Finds a ride with a specific attribute, if it exists 
+         * Check if ride with the specified attritute exists or not
          */
         Ride.find(function(err, rides){
             var queryParam = req.query;
@@ -97,7 +99,10 @@ router.route('/rides')
      */
     .post(function(req, res){
         /**
-         * Add aditional error handling here
+         * Error handling here-
+         * Checks if the ride already exists or is an invalid ride
+         * Checks if another/specific property is needed for the ride
+         * Checks if there is an invalid property of the requested ride
          */
 
         var ride = new Ride();
@@ -172,11 +177,10 @@ router.route('/rides')
         });
     })
 
-
+    //Delete rides if no error encountered
     .delete(function(req,res){
             Ride.remove({}, function(err, ride){
                 if(err){
-                    //res.status(500).send(err);
                     res.status(404).json({
                         "errorCode": "1002", 
                         "errorMessage": "Error deleting rides",
@@ -202,11 +206,11 @@ router.route('/rides/:ride_id')
      */
     .get(function(req, res){
         /**
-         * Add extra error handling rules here
+         * Error handling rules here-
+         * To check if the given ride with the id exists 
          */
         Ride.findById(req.params.ride_id, function(err, ride){
             if(err){
-                //res.status(500).send(err);
                 res.status(404).json({
                         "errorCode": "1002", 
                         "errorMessage": util.format("Given ride with id '%s' does not exist",req.params.ride_id), 
@@ -246,7 +250,9 @@ router.route('/rides/:ride_id')
      */
     .patch(function(req, res){
         /**
-         * Add extra error handling rules here
+         * Error handling rules here-
+         * Checks if another/specific property is needed for the ride
+         * Checks if there is an invalid property/request of the given ride
          */
 
         Ride.findById(req.params.ride_id, function(err, ride){
@@ -307,13 +313,13 @@ router.route('/rides/:ride_id')
      */
     .delete(function(req, res){
         /**
-         * Add extra error handling rules here
+         * Error handling rules here-
+         * Deletes the specific ride if id exists
          */
         Ride.remove({
             _id : req.params.ride_id
         }, function(err, ride){
             if(err){
-                //res.status(500).send(err);
                 res.status(404).json({
                         "errorCode": "1002", 
                         "errorMessage": util.format("Given ride with id '%s' does not exist",req.params.ride_id), 
@@ -340,7 +346,8 @@ router.route('/rides/:ride_id/routePoints')
      */
     .get(function(req, res){
         /**
-         * Add extra error handling rules here
+         * Error handling rules here-
+         * 
          */
         Ride.findById(req.params.ride_id, function(err, ride){
             if(err){
@@ -473,6 +480,8 @@ router.route('/rides/:ride_id/routePoints')
      * GET call for the ride entity (single).
      * @returns {object} the ride with Id ride_id. (200 Status Code)
      * @throws Mongoose Database Error (500 Status Code)
+     * Checks if ride is null, undefined 
+     * Check if route is null or undefined
      */
     .get(function(req, res){
         Ride.findById(req.params.ride_id, function(err, ride){

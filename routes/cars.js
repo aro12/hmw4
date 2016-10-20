@@ -1,7 +1,7 @@
 /** 
  * Express Route: /cars
- * @author Clark Jeria
- * @version 0.0.3
+ * @author Aroshi Handa
+ * @version 0.1
  */
 var express = require('express');
 var router = express.Router();
@@ -10,6 +10,7 @@ var util = require('util');
 var Car = require('../app/models/car');
 var mongoose = require('mongoose');
 
+// Checks if the car properties are valid or not
 function isRequestValid(mKeys,req,res){
 
     var schemaKeys = [];
@@ -40,8 +41,10 @@ router.route('/cars')
      */
     .get(function(req, res){
         /**
-         * Add extra error handling rules here
+         * Error handling rules here-
+         * Finds a car with a specific attribute, if it exists 
          */
+        
         Car.find(function(err, cars){
             var queryParam = req.query;
         
@@ -94,9 +97,12 @@ router.route('/cars')
      */
     .post(function(req, res){
         /**
-         * Add aditional error handling here
+         * Error handling here-
+         * Checks if the car already exists or is an invalid car
+         * Checks if another/specific property is needed for the car
+         * Checks if there is an invalid property of the requested car
          */
-
+         
         var car = new Car();
         car.license = req.body.license;
         car.doorCount = req.body.doorCount;
@@ -160,10 +166,10 @@ router.route('/cars')
             res.status(201).json(car);
         });
     }).
+    //Delete cars if no error 
     delete(function(req,res){
         Car.remove({},function(err){
             if(err){
-                //res.status(500).send(err);
                 res.status(404).json({
                         "errorCode": "1002", 
                         "errorMessage": "Error deleting cars",
@@ -182,17 +188,17 @@ router.route('/cars')
  */
 router.route('/cars/:car_id')
     /**
-     * GET call for the car entity (single).
-     * @returns {object} the car with Id car_id. (200 Status Code)
+     * GET call for a single car entity
+     * @returns the specific car with Id car_id. (200 Status Code)
      * @throws Mongoose Database Error (500 Status Code)
      */
     .get(function(req, res){
         /**
-         * Add extra error handling rules here
+         * Error handling rules here-
+         * To check if the given car with the id exists 
          */
         Car.findById(req.params.car_id, function(err, car){
             if(err){
-                //res.status(500).send(err);
                 res.status(404).json({
                         "errorCode": "1002", 
                         "errorMessage": util.format("Given car with id '%s' does not exist",req.params.car_id), 
@@ -232,7 +238,9 @@ router.route('/cars/:car_id')
      */
     .patch(function(req, res){
         /**
-         * Add extra error handling rules here
+         * Error handling rules-
+         * Checks if another/specific property is needed for the car
+         * Checks if there is an invalid property/request of the given car
          */
 
         Car.findById(req.params.car_id, function(err, car){
@@ -293,13 +301,13 @@ router.route('/cars/:car_id')
      */
     .delete(function(req, res){
         /**
-         * Add extra error handling rules here
+         * Error handling rules-
+         * Deletes the specific car if id exists
          */
         Car.remove({
             _id : req.params.car_id
         }, function(err, car){
             if(err){
-                //res.status(500).send(err);
                 res.status(404).json({
                         "errorCode": "1002", 
                         "errorMessage": util.format("Given car with id '%s' does not exist",req.params.car_id), 

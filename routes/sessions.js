@@ -3,6 +3,7 @@ var router = express.Router();
 var util = require('util');
 var mongoose = require('mongoose');
 
+//session-specific security token
 var Session = require('../app/models/session');
 var APP_SECRET = "SecretKey";
 
@@ -22,7 +23,7 @@ router.route('/')
     .post(function(req, res){
 
         var username = "aroshi";
-        var password = "honda";
+        var password = "handa";
 
         // If username & password is missing 
         if(Object.keys(req.body).indexOf("username")<0 && Object.keys(req.body).indexOf("password")<0)
@@ -45,7 +46,7 @@ router.route('/')
             })
             return; 
         }
-
+        //Encryption,hashing, encoding (base 64)
         expiration = (parseInt(new Date()/1000) + 3600);
         clearString = username+":"+expiration;
 
@@ -54,7 +55,6 @@ router.route('/')
        
         console.log(clearString, hashString,":",cryptString);
         response = {token: base64.encode(cryptString)}
-        // console.log("token", response)
         
         var mSession = new Session();
         mSession.token = response.token;

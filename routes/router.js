@@ -1,7 +1,7 @@
 /** 
  * Express Route: /
- * @author Clark Jeria
- * @version 0.0.2
+ * @author Aroshi Handa
+ * @version 0.4
  */
 var express = require('express');
 var router = express.Router();
@@ -10,7 +10,7 @@ var util = require('util');
 var mongoose = require('mongoose');
 
 /**
- * Initial route of the API for connection testing purpouses
+ * Initial route of the API for connection testing purposes
  * @returns {object} A string message.
  */
 

@@ -1,7 +1,7 @@
 /** 
  * Mongoose Schema for the Entity Ride
- * @author Clark Jeria
- * @version 0.0.3
+ * @author Aroshi Handa
+ * @version 0.2
  */
 
 var mongoose     = require('mongoose');
@@ -9,13 +9,13 @@ var Schema       = mongoose.Schema;
 
 var RideSchema   = new Schema({
     /**
-     * Here you need to add the rides properties
+     *   The properties of rides
      * - passenger (reference, Required)
      * - driver (reference, Required)
      * - car (reference, Required)
      * - rideType (String, [ECONOMY, PREMIUM, EXECUTIVE], Required)
-     * - startPoint  Object (lat: Decimal, long: Decimal) (latitude/longitude combination, Required)
-     * - endPoint Object (lat: Decimal, long: Decimal) (latitude/longitude combination, Required)
+     * - startPoint  Object (lat: Decimal, long: Decimal) (latitude-(lat)/longitude-(long) combination, Required)
+     * - endPoint Object (lat: Decimal, long: Decimal) (latitude(lat)/longitude(long) combination, Required)
      * - requestTime (Number, TimeStamp, Required)
      * - pickupTime (Number, TimeStamp, Required)
      * - dropOffTime (Number, TimeStamp, Required)

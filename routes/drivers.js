@@ -1,7 +1,7 @@
 /** 
  * Express Route: /drivers
- * @author Clark Jeria
- * @version 0.0.3
+ * @author Aroshi Handa
+ * @version 0.2
  */
 var express = require('express');
 var router = express.Router();
@@ -9,6 +9,7 @@ var util = require('util');
 
 var Driver = require('../app/models/driver');
 
+// Checks if the driver properties are valid or not
 function isRequestValid(mKeys,req,res){
     var schemaKeys = [];
     Driver.schema.eachPath(function(path){
@@ -38,7 +39,9 @@ router.route('/drivers')
      */
     .get(function(req, res){
         /**
-         * Add extra error handling rules here
+         * Error handling rules here-
+         * Checks the validity of the format for a given driver
+         * Checks if the driver with the sepecifed attribute exists or not
          */
         Driver.find(function(err, drivers){
             var queryParam = req.query;
@@ -108,7 +111,10 @@ router.route('/drivers')
      */
     .post(function(req, res){
         /**
-         * Add aditional error handling here
+         * Error handling here-
+         * Checks if the driver already exists or not
+         * Checks if another attribute or property is needed for the driver
+         * Checks the validity of the given driver object
          */
 
         var driver = new Driver();
@@ -184,10 +190,11 @@ router.route('/drivers')
             }
         });
     }).
+    
+    //Delete drivers if no error
     delete(function(req,res){
         Driver.remove({},function(err){
             if(err){
-                //res.status(500).send(err);
                 res.status(404).json({
                         "errorCode": "1002", 
                         "errorMessage": "Error deleting drivers",
@@ -211,11 +218,11 @@ router.route('/drivers/:driver_id')
      */
     .get(function(req, res){
         /**
-         * Add extra error handling rules here
+         * Error handling rules here-
+         * To check if the given driver with the id exists 
          */
         Driver.findById(req.params.driver_id, function(err, driver){
             if(err){
-                //res.status(500).send(err);
                     res.status(404).json({
                         "errorCode": "1002", 
                         "errorMessage": util.format("Given driver with id '%s' does not exist",req.params.driver_id), 
@@ -255,7 +262,9 @@ router.route('/drivers/:driver_id')
      */
     .patch(function(req, res){        
         /**
-         * Add aditional error handling here
+         * Error handling here-
+         * Checks if another/specific property is needed for the driver
+         * Checks if there is an invalid property/request of the given driver
          */
 
         Driver.findById(req.params.driver_id, function(err, driver){
@@ -270,7 +279,6 @@ router.route('/drivers/:driver_id')
 
                 driver.save(function(err){
                     if(err){
-                        //console.log(err);
                             if(Object.keys(err).indexOf('errors')>0){
                                 var errorKey = Object.keys(err.errors)[0];
                                 var errorObj = err.errors[errorKey];
@@ -305,7 +313,8 @@ router.route('/drivers/:driver_id')
      */
     .delete(function(req, res){
         /**
-         * Add extra error handling rules here
+         * Error handling rules here-
+         * Deletes the specific driver if id is valid
          */
         Driver.remove({
             _id : req.params.driver_id

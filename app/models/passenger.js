@@ -1,7 +1,7 @@
 /** 
  * Mongoose Schema for the Entity Passenger
- * @author Clark Jeria
- * @version 0.0.3
+ * @author Aroshi Handa
+ * @version 0.0.2
  */
 
 var mongoose     = require('mongoose');
