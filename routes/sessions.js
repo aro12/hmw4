@@ -39,6 +39,7 @@ router.route('/')
         //Invalid username & password
         if(req.body.username != username || req.body.password != password)
         {
+            console.log(req.body);
            res.status(400).json({
                 "errorCode": "5007", 
                 "errorMessage": util.format("Invalid Username & Password"), 
@@ -53,7 +54,7 @@ router.route('/')
         hashString = CryptoJS.HmacSHA1(clearString,"APP");
         cryptString = CryptoJS.AES.encrypt(clearString+":"+hashString,password).toString();
        
-        console.log(clearString, hashString,":",cryptString);
+        //console.log(clearString, hashString,":",cryptString);
         response = {token: base64.encode(cryptString)}
         
         var mSession = new Session();

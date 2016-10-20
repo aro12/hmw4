@@ -13,7 +13,7 @@ carOne = {
 
 tokenObj = {
   "username":"aroshi",
-  "password":""
+  "password":"handa"
 }
 
 var carOneId;
@@ -26,7 +26,8 @@ exports.create_token = function(done){
   .expect(201)
   .end(function(err,response){
      assert.ok(typeof response.body === 'object');
-     assert.ok(response.body.username === "aro");
+    // console.log(response.body);
+     assert.ok(response.body.token);
      accesToken = response.body.token;
      return done();
   })

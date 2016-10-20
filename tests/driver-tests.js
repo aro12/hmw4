@@ -20,8 +20,8 @@ driverOne = {
 };
 
 tokenObj = {
-  "username":"aro",
-  "password":"aro123"
+  "username":"aroshi",
+  "password":"handa"
 }
 
 var driverOneId;
@@ -35,7 +35,7 @@ exports.create_token = function(done){
   .end(function(err,response){
     //console.log(err);
      assert.ok(typeof response.body === 'object');
-     assert.ok(response.body.username === "aro");
+    assert.ok(response.body.token);
      accesToken = response.body.token;
      return done();
   })
